@@ -1,48 +1,84 @@
-import * as dotenv from "dotenv";
-
 import { task } from "hardhat/config";
-import { HardhatUserConfig } from "hardhat/types";
-import "@nomiclabs/hardhat-etherscan";
-import "@nomiclabs/hardhat-waffle";
+import { HardhatUserConfig } from "hardhat/config";
+
 import "@typechain/hardhat";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
+import "@nomiclabs/hardhat-ethers";
+import "@nomiclabs/hardhat-waffle";
+import 'solidity-coverage';
 
-dotenv.config();
+import accountUtils from './utils/accounts';
+import { parseEther } from "ethers/lib/utils";
 
-// This is a sample Hardhat task. To learn how to create your own go to
-// https://hardhat.org/guides/create-task.html
-task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
+task("accounts", "Prints the list of accounts", async (args, hre) => {
   const accounts = await hre.ethers.getSigners();
-
   for (const account of accounts) {
     console.log(account.address);
   }
 });
 
-// You need to export an object to set up your config
-// Go to https://hardhat.org/config/ to learn more
+/**
+ * @type import('hardhat/config').HardhatUserConfig
+ */
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.4",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.11",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
+      },
+      {
+        version: "0.6.6",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 1000,
+          },
+        },
+      }
+    ]
+  },
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    hardhat: {
+      accounts: accountUtils.getAccounts().map(acc => ({ balance: parseEther('1000000000').toString(), privateKey: acc }))
+    },
+    rinkeby: {
+      url: `https://eth-rinkeby.alchemyapi.io/v2/z3KAO-Qeej9Ehx6INdTGOb-7XCwoygPj`,
+      accounts: accountUtils.getAccounts(),
     },
     bsc_test: {
       url: `https://data-seed-prebsc-1-s1.binance.org:8545/`,
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      accounts: accountUtils.getAccounts(),
     },
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
-  },
-  etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    polygon_test: {
+      url: `https://polygon-mumbai.g.alchemy.com/v2/1PqRCjpoe18FDf-fKc6qPyVySXimFCQY`,
+      accounts: accountUtils.getAccounts(),
+    },
+    optimism_test: {
+      url: `https://opt-kovan.g.alchemy.com/v2/L49JdbEmwYPRSQwSEdFEGhfYOQg4z-u4`,
+      accounts: accountUtils.getAccounts(),
+    },
+    arbitrum_test: {
+      url: `https://arb-rinkeby.g.alchemy.com/v2/EUEjn0YZyFn_QcsAiKpbpUSyAaHH0hNo`,
+      accounts: accountUtils.getAccounts(),
+    },
+    fantom_test: {
+      url: `https://xapi.testnet.fantom.network/lachesis`,
+      accounts: accountUtils.getAccounts(),
+    },
+    avax_test: {
+      url: `https://api.avax-test.network/ext/bc/C/rpc`,
+      accounts: accountUtils.getAccounts(),
+    },
+    one_test: {
+      url: `https://api.s0.b.hmny.io`,
+      accounts: accountUtils.getAccounts(),
+    },
   },
 };
 
