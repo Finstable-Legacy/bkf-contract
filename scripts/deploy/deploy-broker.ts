@@ -18,4 +18,5 @@ export default async function deployBroker() {
     Broker: brokerContract.address,
   });
   console.log("Broker deployed to:", brokerContract.address);
+
 }

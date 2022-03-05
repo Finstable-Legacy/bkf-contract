@@ -15,9 +15,10 @@ contract Broker is Admin, FeeCollector {
 
     event Purchased(
         uint256 orderId,
-        address merchant,
+        address indexed payer,
+        address indexed merchant,
         address inputToken,
-        address outputToken,
+        address indexed outputToken,
         uint256 amountIn,
         uint256 amountOut
     );
@@ -68,6 +69,7 @@ contract Broker is Admin, FeeCollector {
 
         emit Purchased(
             orderId,
+            msg.sender,
             merchant,
             inputToken,
             outputToken,
