@@ -11,7 +11,7 @@ contract Broker is Admin, FeeCollector {
     uint256 private constant _COMPLETED = 1;
 
     mapping(uint256 => uint256) public orderStatus;
-    address private UNISWAP_V2_ROUTER;
+    address public swapRouter;
 
     event Purchased(
         uint256 orderId,
@@ -22,12 +22,14 @@ contract Broker is Admin, FeeCollector {
         uint256 amountOut
     );
 
+    event SwapRouterChanged(address oldSwapRouter, address newSwapRouter);
+
     constructor(
         address _router,
         address _rootAdmin,
         address _feeClaimer
     ) Admin(_rootAdmin) FeeCollector(_feeClaimer) {
-        UNISWAP_V2_ROUTER = _router;
+        swapRouter = _router;
     }
 
     function purchase(
@@ -83,7 +85,7 @@ contract Broker is Admin, FeeCollector {
         uint256 _deadline
     ) private returns (uint256) {
         IERC20(_tokenIn).transferFrom(msg.sender, address(this), _amountInMax);
-        IERC20(_tokenIn).approve(UNISWAP_V2_ROUTER, _amountInMax);
+        IERC20(_tokenIn).approve(swapRouter, _amountInMax);
 
         address[] memory path = new address[](2);
 
@@ -91,7 +93,7 @@ contract Broker is Admin, FeeCollector {
         path[1] = _tokenOut;
 
         // Receive an exact amount of output tokens for as few input tokens as possible
-        uint256[] memory amounts = IUniswapV2Router02(UNISWAP_V2_ROUTER)
+        uint256[] memory amounts = IUniswapV2Router02(swapRouter)
             .swapTokensForExactTokens(
                 _amountOut,
                 _amountInMax,
@@ -109,5 +111,11 @@ contract Broker is Admin, FeeCollector {
 
     function setFeeClaimer(address newFeeClaimer) external onlyRootAdmin {
         _setFeeClaimer(newFeeClaimer);
+    }
+
+    function setSwapRouter(address newSwapRouter) external onlyRootAdmin {
+        address oldSwapRouter = swapRouter;
+        swapRouter = newSwapRouter;
+        emit SwapRouterChanged(oldSwapRouter, newSwapRouter);
     }
 }
