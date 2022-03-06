@@ -10,3 +10,4 @@ artifacts
 secrets.json
 
 typechain-types
+out

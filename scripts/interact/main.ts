@@ -1,11 +1,7 @@
-import payment from "./payment";
-import approveToken from "./approve-token";
-import getData from "./getData";
+import changeMarket from "./change-market";
 
 async function main() {
-  // await approveToken();
-  await payment({ sameToken: false });
-  await getData();
+  await changeMarket();
 }
 
 main()
