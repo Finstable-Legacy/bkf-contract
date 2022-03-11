@@ -1,7 +1,9 @@
+import changeFee from "./change-fee";
 import changeMarket from "./change-market";
 
 async function main() {
-  await changeMarket();
+  // await changeMarket();
+  await changeFee();
 }
 
 main()
