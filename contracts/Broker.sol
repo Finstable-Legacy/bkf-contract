@@ -5,6 +5,7 @@ import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
 import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
 import "./abstracts/Admin.sol";
 import "./abstracts/FeeCollector.sol";
+import "./interfaces/IBridge.sol";
 
 contract Broker is Admin, FeeCollector {
     uint256 private constant _NEW = 0;
@@ -12,6 +13,7 @@ contract Broker is Admin, FeeCollector {
 
     mapping(uint256 => uint256) public orderStatus;
     address public swapRouter;
+    address public bridge;
 
     event Purchased(
         uint256 orderId,
@@ -20,17 +22,21 @@ contract Broker is Admin, FeeCollector {
         address inputToken,
         address indexed outputToken,
         uint256 amountIn,
-        uint256 amountOut
+        uint256 amountOut,
+        bool bridged
     );
 
     event SwapRouterChanged(address oldSwapRouter, address newSwapRouter);
+    event BridgeChanged(address oldBridge, address newBridge);
 
     constructor(
         address _router,
+        address _bridge,
         address _rootAdmin,
         address _feeClaimer
     ) Admin(_rootAdmin) FeeCollector(_feeClaimer) {
         swapRouter = _router;
+        bridge = _bridge;
     }
 
     function purchase(
@@ -40,7 +46,8 @@ contract Broker is Admin, FeeCollector {
         address outputToken,
         uint256 amountIn,
         uint256 amountOutMin,
-        uint256 deadline
+        uint256 deadline,
+        bool isBridged
     ) public {
         require(orderStatus[orderId] == _NEW, "Order was completed");
 
@@ -49,7 +56,11 @@ contract Broker is Admin, FeeCollector {
         if (inputToken == outputToken) {
             (amountOut, ) = deductFee(inputToken, amountIn);
 
-            IERC20(inputToken).transferFrom(msg.sender, merchant, amountOut);
+            IERC20(inputToken).transferFrom(
+                msg.sender,
+                address(this),
+                amountOut
+            );
         } else {
             uint256 swapOutput = swapTokensForExactTokens(
                 inputToken,
@@ -61,7 +72,17 @@ contract Broker is Admin, FeeCollector {
             );
 
             (amountOut, ) = deductFee(outputToken, swapOutput);
+        }
 
+        if (isBridged) {
+            IERC20(outputToken).approve(bridge, amountOut);
+            IBridge(bridge).bridgeERC20(
+                outputToken,
+                msg.sender,
+                merchant,
+                amountOut
+            );
+        } else {
             IERC20(outputToken).transfer(merchant, amountOut);
         }
 
@@ -74,7 +95,8 @@ contract Broker is Admin, FeeCollector {
             inputToken,
             outputToken,
             amountIn,
-            amountOut
+            amountOut,
+            isBridged
         );
     }
 
@@ -119,5 +141,11 @@ contract Broker is Admin, FeeCollector {
         address oldSwapRouter = swapRouter;
         swapRouter = newSwapRouter;
         emit SwapRouterChanged(oldSwapRouter, newSwapRouter);
+    }
+
+    function setBridge(address newBridge) external onlyRootAdmin {
+        address oldBridge = bridge;
+        bridge = newBridge;
+        emit BridgeChanged(oldBridge, newBridge);
     }
 }

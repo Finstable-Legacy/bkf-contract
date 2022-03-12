@@ -3,7 +3,7 @@ import { expect } from "chai";
 import { constants } from "ethers";
 import { formatEther, parseEther } from "ethers/lib/utils";
 import { ethers } from "hardhat";
-import { BlockSwapFactory, BlockSwapFactory__factory, BlockSwapRouter, BlockSwapRouter__factory, Broker, Broker__factory, TestERC20__factory, WETH, WETH__factory } from "../../typechain";
+import { BlockSwapFactory, BlockSwapFactory__factory, BlockSwapRouter, BlockSwapRouter__factory, Broker, Broker__factory, SimpleBKCBridge, SimpleBKCBridge__factory, TestERC20__factory, WETH, WETH__factory } from "../../typechain";
 import { TestERC20 } from "../../typechain/TestERC20";
 import timeUtils from '../../utils/time';
 
@@ -20,6 +20,7 @@ describe("Broker", function () {
   let swapRouter: BlockSwapRouter;
 
   let broker: Broker;
+  let bridge: SimpleBKCBridge;
   let busd: TestERC20;
   let dai: TestERC20;
 
@@ -46,8 +47,11 @@ describe("Broker", function () {
     const SwapRouter = await ethers.getContractFactory("BlockSwapRouter") as BlockSwapRouter__factory;
     swapRouter = await SwapRouter.deploy(swapFactory.address, weth.address);
 
+    const Bridge = await ethers.getContractFactory("SimpleBKCBridge") as SimpleBKCBridge__factory;
+    bridge = await Bridge.deploy();
+
     const Broker = await ethers.getContractFactory("Broker") as Broker__factory;
-    broker = await Broker.deploy(swapRouter.address, rootAdmin.address, feeClaimer.address);
+    broker = await Broker.deploy(swapRouter.address, bridge.address, rootAdmin.address, feeClaimer.address);
 
     const TestERC20 = await ethers.getContractFactory("TestERC20") as TestERC20__factory;
     busd = await TestERC20.deploy("Binance USD", "BUSD", [rootAdmin.address]);
@@ -77,7 +81,8 @@ describe("Broker", function () {
       busd.address,
       productPrice,
       productPrice,
-      deadline
+      deadline,
+      false
     );
 
     const merchantEndBalance = await busd.balanceOf(merchant.address);
@@ -107,7 +112,8 @@ describe("Broker", function () {
       busd.address,
       inputAmount[0],
       productPrice,
-      deadline
+      deadline,
+      false
     );
 
     const merchantEndBalance = await busd.balanceOf(merchant.address);
@@ -119,6 +125,35 @@ describe("Broker", function () {
     const calculatedOut = productPrice.sub(collectedFee);
 
     expect(merchantEndBalance.sub(merchantInitialBalance)).to.eq(calculatedOut);
+  });
+
+  it("Should bridge output token", async function () {
+    const deadline = timeUtils.now() + timeUtils.duration.minutes(5);
+
+    const merchantInitialBalance = await busd.balanceOf(merchant.address);
+
+    await busd.connect(customer).approve(broker.address, constants.MaxUint256);
+
+    await broker.connect(customer).purchase(
+      0,
+      merchant.address,
+      busd.address,
+      busd.address,
+      productPrice,
+      productPrice,
+      deadline,
+      true
+    );
+
+    const bridgeBalance = await busd.balanceOf(bridge.address);
+
+    const fee = await broker.fee();
+    const shifter = await broker.shifter();
+
+    const collectedFee = productPrice.mul(fee).div(shifter);
+    const calculatedOut = productPrice.sub(collectedFee);
+
+    expect(bridgeBalance.sub(merchantInitialBalance)).to.eq(calculatedOut);
   });
 
 });

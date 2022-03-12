@@ -20,12 +20,13 @@ contract SimpleBKCBridge {
 
     function bridgeERC20(
         address tokenAddr,
+        address from,
         address to,
         uint256 amount
     ) external {
         IERC20 token = IERC20(tokenAddr);
         token.transferFrom(msg.sender, address(this), amount);
-        emit BridgedERC20(tokenAddr, msg.sender, to, amount);
+        emit BridgedERC20(tokenAddr, from, to, amount);
     }
 
     function receiveERC20(
