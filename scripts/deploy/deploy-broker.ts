@@ -10,7 +10,7 @@ export default async function deployBroker() {
     "Broker"
   )) as Broker__factory;
 
-  const brokerContract = await BrokerFactory.deploy(addressList['SwapRouter'], owner.address, owner.address);
+  const brokerContract = await BrokerFactory.deploy(addressList['SwapRouter'], addressList['Bridge'], owner.address, owner.address);
 
   await brokerContract.deployTransaction.wait();
 

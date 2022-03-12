@@ -9,6 +9,6 @@ export default async function deployBridge() {
     await simpleBKCBridge.deployed();
 
     console.log("Simple BKC Bridge deployed to:", simpleBKCBridge.address);
-    await addressUtils.saveAddresses(hre.network.name, { SimpleBKCBridge: simpleBKCBridge.address })
+    await addressUtils.saveAddresses(hre.network.name, { Bridge: simpleBKCBridge.address })
 }
 
