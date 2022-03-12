@@ -79,6 +79,14 @@ const config: HardhatUserConfig = {
       url: `https://api.s0.b.hmny.io`,
       accounts: accountUtils.getAccounts(),
     },
+    kubchain_test: {
+      url: `https://rpc-testnet.bitkubchain.io`,
+      accounts: accountUtils.getAccounts(),
+    },
+    kubchain: {
+      url: `https://rpc.bitkubchain.io`,
+      accounts: accountUtils.getAccounts(),
+    },
   },
 };
 
