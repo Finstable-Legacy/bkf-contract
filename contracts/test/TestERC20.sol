@@ -17,4 +17,8 @@ contract TestERC20 is ERC20 {
             _mint(managers[i], 100000000 * 10**uint256(decimals()));
         }
     }
+
+    function mint(address sender, uint256 amount) external {
+        _mint(sender, amount);
+    }
 }
