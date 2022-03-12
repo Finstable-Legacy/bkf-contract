@@ -1,9 +1,11 @@
+import deployBridge from "./deploy-bridge";
 import deployBroker from "./deploy-broker";
 import deployToken from "./deploy-token";
 
 async function main() {
   // await deployToken()
-  await deployBroker();
+  // await deployBroker();
+  await deployBridge();
 }
 
 main()
