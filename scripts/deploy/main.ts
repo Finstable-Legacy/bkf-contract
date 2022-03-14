@@ -7,9 +7,9 @@ async function main() {
   // await deployToken('Bitkub-Pegged USDT', 'KUSDT');
   // await deployToken('Bitkub-Pegged USDC', 'KUSDC');
   // await deployToken('Bitkub-Pegged DAI', 'KDAI');
-  await deployBridge();
+  // await deployBridge();
   await deployBroker();
-  await deployDealer();
+  // await deployDealer();
 }
 
 main()

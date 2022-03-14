@@ -23,6 +23,7 @@ contract Broker is Admin, FeeCollector {
         address indexed outputToken,
         uint256 amountIn,
         uint256 amountOut,
+        uint256 fee,
         bool bridged
     );
 
@@ -52,9 +53,10 @@ contract Broker is Admin, FeeCollector {
         require(orderStatus[orderId] == _NEW, "Order was completed");
 
         uint256 amountOut;
+        uint256 deductedFee;
 
         if (inputToken == outputToken) {
-            (amountOut, ) = deductFee(inputToken, amountIn);
+            (amountOut, deductedFee) = deductFee(inputToken, amountIn);
 
             IERC20(inputToken).transferFrom(
                 msg.sender,
@@ -71,7 +73,7 @@ contract Broker is Admin, FeeCollector {
                 deadline
             );
 
-            (amountOut, ) = deductFee(outputToken, swapOutput);
+            (amountOut, deductedFee) = deductFee(outputToken, swapOutput);
         }
 
         if (isBridged) {
@@ -96,6 +98,7 @@ contract Broker is Admin, FeeCollector {
             outputToken,
             amountIn,
             amountOut,
+            deductedFee,
             isBridged
         );
     }
