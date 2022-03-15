@@ -1,9 +1,11 @@
+import changeBridge from "./change-bridge";
 import changeFee from "./change-fee";
 import changeMarket from "./change-market";
 
 async function main() {
   // await changeMarket();
-  await changeFee();
+  // await changeFee();
+  await changeBridge();
 }
 
 main()

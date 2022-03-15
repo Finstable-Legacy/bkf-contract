@@ -2,7 +2,7 @@
 pragma solidity 0.8.11;
 
 import "@uniswap/v2-periphery/contracts/interfaces/IUniswapV2Router02.sol";
-import "@uniswap/v2-periphery/contracts/interfaces/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./abstracts/Admin.sol";
 import "./abstracts/FeeCollector.sol";
 import "./interfaces/IBridge.sol";
@@ -24,7 +24,7 @@ contract Broker is Admin, FeeCollector {
         uint256 amountIn,
         uint256 amountOut,
         uint256 fee,
-        bool bridged
+        uint256 destChainId
     );
 
     event SwapRouterChanged(address oldSwapRouter, address newSwapRouter);
@@ -48,7 +48,7 @@ contract Broker is Admin, FeeCollector {
         uint256 amountIn,
         uint256 amountOutMin,
         uint256 deadline,
-        bool isBridged
+        uint256 destChainID
     ) public {
         require(orderStatus[orderId] == _NEW, "Order was completed");
 
@@ -76,13 +76,13 @@ contract Broker is Admin, FeeCollector {
             (amountOut, deductedFee) = deductFee(outputToken, swapOutput);
         }
 
-        if (isBridged) {
+        if (getChainID() != destChainID) {
             IERC20(outputToken).approve(bridge, amountOut);
-            IBridge(bridge).bridgeERC20(
-                outputToken,
-                msg.sender,
-                merchant,
-                amountOut
+            IBridge(bridge).bridge(
+                IERC20(outputToken),
+                amountOut,
+                destChainID,
+                merchant
             );
         } else {
             IERC20(outputToken).transfer(merchant, amountOut);
@@ -99,7 +99,7 @@ contract Broker is Admin, FeeCollector {
             amountIn,
             amountOut,
             deductedFee,
-            isBridged
+            destChainID
         );
     }
 
@@ -150,5 +150,13 @@ contract Broker is Admin, FeeCollector {
         address oldBridge = bridge;
         bridge = newBridge;
         emit BridgeChanged(oldBridge, newBridge);
+    }
+
+    function getChainID() public view returns (uint256) {
+        uint256 id;
+        assembly {
+            id := chainid()
+        }
+        return id;
     }
 }
