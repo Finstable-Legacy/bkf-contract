@@ -17,13 +17,13 @@ async function main() {
   // await deployDealer();
 
   await deployKWRAP(
-    "Fin USDC",
-    "FUSDC",
+    "Fin DAI",
+    "FDAI",
     18,
     addressList["KYC"],
     addressList["Committee"],
     addressList["TransferRouter"],
-    addressList["KUSDC"]
+    addressList["KDAI"]
   );
 }
 
