@@ -13,18 +13,18 @@ async function main() {
   // await deployToken('Bitkub-Pegged USDC', 'KUSDC');
   // await deployToken('Bitkub-Pegged DAI', 'KDAI');
   // await deployBridge();
-  // await deployBroker();
+  await deployBroker();
   // await deployDealer();
 
-  await deployKWRAP(
-    "Fin DAI",
-    "FDAI",
-    18,
-    addressList["KYC"],
-    addressList["Committee"],
-    addressList["TransferRouter"],
-    addressList["KDAI"]
-  );
+  // await deployKWRAP(
+  //   "Fin DAI",
+  //   "FDAI",
+  //   18,
+  //   addressList["KYC"],
+  //   addressList["Committee"],
+  //   addressList["TransferRouter"],
+  //   addressList["KDAI"]
+  // );
 }
 
 main()
