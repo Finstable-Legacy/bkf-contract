@@ -300,7 +300,13 @@ contract DealerKAP20 is
             createdOrder.amount
         );
 
-        IKAP20(_tokenAddress).transferFrom(_seller, _buyer, transferredAmount);
+        transferRouter.transferFrom(
+            PROJECT,
+            _tokenAddress,
+            _seller,
+            _buyer,
+            transferredAmount
+        );
 
         emit OrderCreated(_sender, _buyer, _tokenAddress, _orderId);
         emit OrderCompleted(
