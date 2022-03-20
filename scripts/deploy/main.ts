@@ -6,6 +6,7 @@ import { deployDealer } from "./deploy-otc";
 import { deployToken } from "./deploy-token";
 
 import hre from "hardhat";
+import { deployDealerKAP20 } from "./deploy-dealer-kap20";
 
 async function main() {
   const addressList = await addresses.getAddressList(hre.network.name);
@@ -13,8 +14,9 @@ async function main() {
   // await deployToken('Bitkub-Pegged USDC', 'KUSDC');
   // await deployToken('Bitkub-Pegged DAI', 'KDAI');
   // await deployBridge();
-  await deployBroker();
+  // await deployBroker();
   // await deployDealer();
+  await deployDealerKAP20();
 
   // await deployKWRAP(
   //   "Fin DAI",

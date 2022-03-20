@@ -5,8 +5,8 @@ import "../interfaces/IAdmins.sol";
 
 contract Admins is IAdmins {
 
-    uint256 private constant _NOT_ADMIN = 0;
-    uint256 private constant _ADMIN = 1;
+    uint256 internal constant _NOT_ADMIN = 0;
+    uint256 internal constant _ADMIN = 1;
 
     address public override rootAdmin;
     mapping(address => uint256) public override isAdmin;
