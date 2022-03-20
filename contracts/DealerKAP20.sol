@@ -274,11 +274,10 @@ contract DealerKAP20 is
         address _tokenAddress,
         address _seller,
         uint256 _amount,
-        address _buyer,
-        address _sender
+        address _buyer
     ) external {
         if (msg.sender == callHelper) {
-            require(isAdmin[_sender] == _ADMIN, "must be admin");
+            require(isAdmin[_buyer] == _ADMIN, "must be admin");
         } else {
             require(isAdmin[msg.sender] == _ADMIN, "must be admin");
         }
@@ -308,7 +307,7 @@ contract DealerKAP20 is
             transferredAmount
         );
 
-        emit OrderCreated(_sender, _buyer, _tokenAddress, _orderId);
+        emit OrderCreated(_buyer, _buyer, _tokenAddress, _orderId);
         emit OrderCompleted(
             createdOrder.seller,
             createdOrder.buyer,
