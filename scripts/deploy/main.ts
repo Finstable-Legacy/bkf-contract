@@ -7,6 +7,7 @@ import { deployToken } from "./deploy-token";
 
 import hre from "hardhat";
 import { deployDealerKAP20 } from "./deploy-dealer-kap20";
+import { deployAdminKAP20 } from "./deploy-admin-kap20";
 
 async function main() {
   const addressList = await addresses.getAddressList(hre.network.name);
@@ -16,7 +17,8 @@ async function main() {
   // await deployBridge();
   // await deployBroker();
   // await deployDealer();
-  await deployDealerKAP20();
+  // await deployDealerKAP20();
+  await deployAdminKAP20();
 
   // await deployKWRAP(
   //   "Fin DAI",
