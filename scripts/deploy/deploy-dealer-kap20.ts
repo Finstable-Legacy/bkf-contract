@@ -13,7 +13,7 @@ export async function deployDealerKAP20() {
   const feeClaimer = owner.address;
   const kyc = addressList["KYC"];
   const committee = addressList["Committee"];
-  const transferRouter = addressList["TransferRouter"];
+  const transferRouter = addressList["AdminKAP20Router"];
   const callHelper = addressList["CallHelper"];
   const acceptedKYCLevel = 4;
 

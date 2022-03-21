@@ -17,8 +17,8 @@ async function main() {
   // await deployBridge();
   // await deployBroker();
   // await deployDealer();
-  // await deployDealerKAP20();
-  await deployAdminKAP20();
+  // await deployAdminKAP20();
+  await deployDealerKAP20();
 
   // await deployKWRAP(
   //   "Fin DAI",
