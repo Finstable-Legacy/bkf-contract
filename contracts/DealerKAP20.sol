@@ -3,20 +3,21 @@ pragma solidity 0.8.11;
 
 import "./abstracts/Admins.sol";
 import "./abstracts/FeeCollector.sol";
+import "./abstracts/BKNextCallHelper.sol";
 import "./modules/KAP20/interfaces/IKAP20.sol";
 import "./modules/KAP20/interfaces/IAdminKAP20Router.sol";
 import "./modules/committee/Committee.sol";
 import "./modules/kyc/KYCHandler.sol";
-import "./modules/transferRouter/NextTransferHandler.sol";
-import "./abstracts/BKNextCallHelper.sol";
+import "./modules/authorization/Authorization.sol";
+import "./modules/transferRouter/TransferRouter.sol";
 
 contract DealerKAP20 is
-    Admins,
+    Authorization,
     FeeCollector,
     Committee,
     KYCHandler,
     BKNextCallHelper,
-    NextTransferHandler
+    TransferRouter
 {
     uint256 private constant _NEW = 0;
     uint256 private constant _CANCELLED = 1;
@@ -24,8 +25,6 @@ contract DealerKAP20 is
     uint256 private constant _APPEALED = 3;
     uint256 private constant _FAILED = 4;
     uint256 private constant _COMPLETED = 5;
-
-    string public constant PROJECT = "bkf-dealer";
 
     uint256 public timeoutPeriod = 5 minutes;
 
@@ -299,12 +298,13 @@ contract DealerKAP20 is
             createdOrder.amount
         );
 
-        transferRouter.transferFrom(
-            PROJECT,
+        transferRouter.externalTransfer(
+            _tokenAddress,
             _tokenAddress,
             _seller,
             _buyer,
-            transferredAmount
+            transferredAmount,
+            0
         );
 
         emit OrderCreated(_buyer, _buyer, _tokenAddress, _orderId);
