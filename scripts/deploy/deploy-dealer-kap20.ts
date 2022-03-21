@@ -14,7 +14,8 @@ export async function deployDealerKAP20() {
   const kyc = addressList["KYC"];
   const committee = addressList["Committee"];
   const transferRouter = addressList["AdminKAP20Router"];
-  const callHelper = addressList["CallHelper"];
+  // const callHelper = addressList["CallHelper"];
+  const callHelper = owner.address;
   const acceptedKYCLevel = 4;
 
   const dealer = await DealerKAP20.deploy(

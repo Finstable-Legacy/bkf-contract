@@ -47,8 +47,16 @@ const config: HardhatUserConfig = {
     hardhat: {
       accounts: accountUtils.getAccounts().map(acc => ({ balance: parseEther('1000000000').toString(), privateKey: acc }))
     },
+    mainnet: {
+      url: `https://eth-mainnet.alchemyapi.io/v2/VpvQ56jy1Mi0OIxiO2YUdnilWzU1z8Mi`,
+      accounts: accountUtils.getAccounts(),
+    },
     rinkeby: {
       url: `https://eth-rinkeby.alchemyapi.io/v2/z3KAO-Qeej9Ehx6INdTGOb-7XCwoygPj`,
+      accounts: accountUtils.getAccounts(),
+    },
+    bsc: {
+      url: `https://bsc-dataseed.binance.org/`,
       accounts: accountUtils.getAccounts(),
     },
     bsc_test: {

@@ -15,10 +15,11 @@ async function main() {
   // await deployToken('Bitkub-Pegged USDC', 'KUSDC');
   // await deployToken('Bitkub-Pegged DAI', 'KDAI');
   // await deployBridge();
-  // await deployBroker();
-  // await deployDealer();
   // await deployAdminKAP20();
-  await deployDealerKAP20();
+
+  await deployBroker();
+  // await deployDealer();
+  // await deployDealerKAP20();
 
   // await deployKWRAP(
   //   "Fin DAI",
