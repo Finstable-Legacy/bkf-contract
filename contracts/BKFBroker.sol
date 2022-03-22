@@ -7,7 +7,7 @@ import "./abstracts/Admin.sol";
 import "./abstracts/FeeCollector.sol";
 import "./interfaces/IBridge.sol";
 
-contract Broker is Admin, FeeCollector {
+contract BKFBroker is Admin, FeeCollector {
     uint256 private constant _NEW = 0;
     uint256 private constant _COMPLETED = 1;
 

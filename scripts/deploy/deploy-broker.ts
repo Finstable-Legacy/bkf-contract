@@ -1,5 +1,6 @@
+import { parseEther } from "ethers/lib/utils";
 import hre, { config, ethers } from "hardhat";
-import { Broker__factory } from "../../typechain";
+import { BKFBroker__factory } from "../../typechain";
 import addressUtils from "../../utils/addresses";
 
 export default async function deployBroker() {
@@ -7,8 +8,8 @@ export default async function deployBroker() {
   const [owner] = await ethers.getSigners();
 
   const BrokerFactory = (await ethers.getContractFactory(
-    "Broker"
-  )) as Broker__factory;
+    "BKFBroker"
+  )) as BKFBroker__factory;
 
   const brokerContract = await BrokerFactory.deploy(
     addressList["SwapRouter"],
