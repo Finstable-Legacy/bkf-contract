@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.11;
 
-import "./interfaces/IAdminKAP20Router.sol";
+import "./interfaces/INextTransferRouter.sol";
 
 abstract contract TransferRouter {
-  IAdminKAP20Router public transferRouter;
+  INextTransferRouter public transferRouter;
 
   function _setTransferRouter(address _transferRouter) internal virtual {
-    transferRouter = IAdminKAP20Router(_transferRouter);
+    transferRouter = INextTransferRouter(_transferRouter);
   }
 }
