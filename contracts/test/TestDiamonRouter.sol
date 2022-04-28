@@ -434,8 +434,7 @@ library DiamonLibrary {
             hex"ff",
             factory,
             keccak256(abi.encodePacked(token0, token1)),
-            // hex"c7681a307de2462d010bd88e1b28354eb6cc441ea5c6fd27098726237ad6f480" // init code hash
-            hex"a01587f7eaed3bb090a03ab803a2a2d0c3bab7f4837f17c3de2e22b25b555ec4" // test
+            hex"0b79618b14b59f4bfe1064f1db5d6fa027479afe52c7150402a3dfabd063597a" // init code hash
           )
         )
       )

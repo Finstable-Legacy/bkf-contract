@@ -1,5 +1,6 @@
 import { ethers } from "hardhat";
 import {
+  BKFToken__factory,
   TestAdminKAP20Router__factory,
   TestAdminProjectRouter__factory,
   TestDiamonFactory__factory,
@@ -10,13 +11,6 @@ import {
   TestKYCBitkubChainV2__factory,
   TestNextTransferRouter__factory,
 } from "../../typechain";
-
-export const deployTestKKUB = async () => {
-  const TestKKUB = (await ethers.getContractFactory(
-    "TestKKUB"
-  )) as TestKKUB__factory;
-  return TestKKUB.deploy();
-};
 
 export const deployTestERC20 = async (
   name: string,
@@ -29,6 +23,13 @@ export const deployTestERC20 = async (
   return TestERC20.deploy(name, symbol, managers);
 };
 
+export const deployTestKKUB = async () => {
+  const TestKKUB = (await ethers.getContractFactory(
+    "TestKKUB"
+  )) as TestKKUB__factory;
+  return TestKKUB.deploy();
+};
+
 export const deployTestKUSDT = async (
   admin: string,
   committee: string,
@@ -39,6 +40,26 @@ export const deployTestKUSDT = async (
     "TestKUSDT"
   )) as TestKUSDT__factory;
   return TestKUSDT.deploy(admin, committee, kyc, acceptedKYCLevel);
+};
+
+export const deployBKFToken = async (
+  totalSupply: string = "10000000",
+  committee: string,
+  kyc: string,
+  transferRouter: string,
+  acceptedKYCLevel: number
+) => {
+  const parsedSupply = ethers.utils.parseEther(totalSupply);
+  const BKFToken = (await ethers.getContractFactory(
+    "BKFToken"
+  )) as BKFToken__factory;
+  return BKFToken.deploy(
+    parsedSupply,
+    kyc,
+    committee,
+    transferRouter,
+    acceptedKYCLevel
+  );
 };
 
 export const deployTestSwapFactory = async () => {

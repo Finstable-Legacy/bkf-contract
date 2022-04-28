@@ -89,7 +89,17 @@ contract BKF is
         );
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
-        // swap first before transfer
+        uint256 swapOutput = swapTokensForExactTokens(
+          inputToken,
+          outputToken,
+          amountOut,
+          amountInMax,
+          address(this),
+          deadline,
+          sender
+        );
+
+        (amountOrder, deductedFee) = deductFee(outputToken, swapOutput);
       }
     } else {
       // Metamask
@@ -98,7 +108,17 @@ contract BKF is
         IKAP20(inputToken).transferFrom(sender, address(this), amountOut);
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
-        // swap first before transfer
+        uint256 swapOutput = swapTokensForExactTokens(
+          inputToken,
+          outputToken,
+          amountOut,
+          amountInMax,
+          address(this),
+          deadline,
+          sender
+        );
+
+        (amountOrder, deductedFee) = deductFee(outputToken, swapOutput);
       }
     }
 
@@ -124,9 +144,10 @@ contract BKF is
     uint256 _amountOut,
     uint256 _amountInMax,
     address _to,
-    uint256 _deadline
+    uint256 _deadline,
+    address _sender
   ) private returns (uint256) {
-    IKAP20(_tokenIn).transferFrom(msg.sender, address(this), _amountInMax);
+    IKAP20(_tokenIn).transferFrom(_sender, address(this), _amountInMax);
     IKAP20(_tokenIn).approve(swapRouter, _amountInMax);
 
     address[] memory path = new address[](2);
