@@ -67,7 +67,7 @@ describe("BKF", function () {
     callHelper = signers[4];
 
     const committee = rootAdmin.address;
-    const accecptedKYCLevel = 0;
+    const acceptedKYCLevel = 0;
 
     kyc = await deployTestKYC();
     adminProjectRouter = await deployTestAdminProjectRouter();
@@ -77,7 +77,7 @@ describe("BKF", function () {
       adminProjectRouter.address,
       committee,
       kyc.address,
-      accecptedKYCLevel
+      acceptedKYCLevel
     );
 
     adminKAP20Router = await deployTestAdminKAP20Router(
@@ -85,7 +85,7 @@ describe("BKF", function () {
       committee,
       kkub.address,
       kyc.address,
-      accecptedKYCLevel
+      acceptedKYCLevel
     );
 
     transferRouter = await deployTestNextTransferRouter(
@@ -101,7 +101,7 @@ describe("BKF", function () {
       committee,
       kyc.address,
       transferRouter.address,
-      accecptedKYCLevel
+      acceptedKYCLevel
     );
 
     busd = await deployTestERC20("Binance USD", "BUSD", [rootAdmin.address]);
@@ -122,7 +122,7 @@ describe("BKF", function () {
       committee,
       transferRouter.address,
       callHelper.address,
-      accecptedKYCLevel
+      acceptedKYCLevel
     );
 
     await busd.connect(rootAdmin).transfer(customer.address, initialBalance);

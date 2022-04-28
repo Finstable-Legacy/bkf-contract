@@ -1,9 +1,9 @@
 import { formatBytes32String } from "ethers/lib/utils";
 import hre, { ethers } from "hardhat";
 import {
-  AdminKAP20Router__factory,
   AdminProjectRouter__factory,
   AdminProject__factory,
+  TestAdminKAP20Router__factory,
 } from "../../typechain";
 import addressUtils from "../../utils/addresses";
 
@@ -20,8 +20,8 @@ export async function deployAdminKAP20() {
   )) as AdminProjectRouter__factory;
 
   const AdminKAP20Router = (await ethers.getContractFactory(
-    "AdminKAP20Router"
-  )) as AdminKAP20Router__factory;
+    "TestAdminKAP20Router"
+  )) as TestAdminKAP20Router__factory;
 
   const committee = addressList["Committee"];
 
