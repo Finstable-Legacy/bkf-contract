@@ -24,6 +24,10 @@ contract BKFToken is KAP20 {
     _mint(msg.sender, _totalSupply);
   }
 
+  function mint(address account, uint256 amount) external onlyOwner {
+    _mint(account, amount);
+  }
+
   function pause() external onlyOwner {
     _pause();
   }
