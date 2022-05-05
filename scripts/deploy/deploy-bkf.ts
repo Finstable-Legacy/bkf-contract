@@ -12,7 +12,7 @@ export async function deployBKF() {
   const swapRouter = addressList["SwapRouter"];
   const kyc = addressList["KYC"];
   const committee = addressList["Committee"];
-  const transferRouter = addressList["AdminKAP20Router"];
+  const transferRouter = addressList["TransferRouter"];
   const callHelper = addressList["CallHelper"];
   // const callHelper = owner.address;
   const acceptedKYCLevel = 0; // 4 for mainnet
