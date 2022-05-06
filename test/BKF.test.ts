@@ -186,8 +186,7 @@ describe("BKF", function () {
         .purchase(
           0,
           merchant.address,
-          kusdt.address,
-          kusdt.address,
+          [kusdt.address, kusdt.address],
           productPrice,
           productPrice,
           deadline,
@@ -219,8 +218,7 @@ describe("BKF", function () {
         .purchase(
           0,
           merchant.address,
-          kusdt.address,
-          kusdt.address,
+          [kusdt.address, kusdt.address],
           productPrice,
           productPrice,
           deadline,
@@ -259,8 +257,7 @@ describe("BKF", function () {
         .purchase(
           0,
           merchant.address,
-          dai.address,
-          busd.address,
+          [dai.address, busd.address],
           inputAmount[0],
           productPrice,
           deadline,
@@ -294,18 +291,16 @@ describe("BKF", function () {
         kusdt.address,
       ]);
 
-      await bkf
-        .connect(callHelper)
-        .purchase(
-          0,
-          merchant.address,
-          bkfToken.address,
-          kusdt.address,
-          inputAmount[0],
-          productPrice,
-          deadline,
-          customer.address
-        );
+      await bkf.connect(callHelper).purchase(
+        0,
+        merchant.address,
+        [bkfToken.address, kusdt.address],
+
+        inputAmount[0],
+        productPrice,
+        deadline,
+        customer.address
+      );
 
       const merchantEndBalance = await kusdt.balanceOf(merchant.address);
 
@@ -334,8 +329,7 @@ describe("BKF", function () {
         .purchase(
           0,
           merchant.address,
-          busd.address,
-          busd.address,
+          [busd.address, busd.address],
           productPrice,
           productPrice,
           deadline,

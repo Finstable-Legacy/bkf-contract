@@ -66,8 +66,7 @@ contract BKF is
   function purchase(
     uint256 orderId,
     address merchant,
-    address inputToken,
-    address outputToken,
+    address[] memory routes,
     uint256 amountInMax,
     uint256 amountOut,
     uint256 deadline,
@@ -75,6 +74,9 @@ contract BKF is
   ) public {
     uint256 amountOrder;
     uint256 deductedFee;
+
+    address inputToken = routes[0];
+    address outputToken = routes[routes.length - 1];
 
     // Bitkub Next
     if (msg.sender == callHelper) {
@@ -90,8 +92,7 @@ contract BKF is
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
         uint256 swapOutput = swapTokensForExactTokens(
-          inputToken,
-          outputToken,
+          routes,
           amountOut,
           amountInMax,
           address(this),
@@ -109,8 +110,7 @@ contract BKF is
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
         uint256 swapOutput = swapTokensForExactTokens(
-          inputToken,
-          outputToken,
+          routes,
           amountOut,
           amountInMax,
           address(this),
@@ -139,25 +139,21 @@ contract BKF is
   }
 
   function swapTokensForExactTokens(
-    address _tokenIn,
-    address _tokenOut,
+    address[] memory _routes,
     uint256 _amountOut,
     uint256 _amountInMax,
     address _to,
     uint256 _deadline,
     address _sender
   ) private returns (uint256) {
+    address _tokenIn = _routes[0];
+
     IKAP20(_tokenIn).transferFrom(_sender, address(this), _amountInMax);
     IKAP20(_tokenIn).approve(swapRouter, _amountInMax);
 
-    address[] memory path = new address[](2);
-
-    path[0] = _tokenIn;
-    path[1] = _tokenOut;
-
     // Receive an exact amount of output tokens for as few input tokens as possible
     uint256[] memory amounts = IUniswapV2Router02(swapRouter)
-      .swapTokensForExactTokens(_amountOut, _amountInMax, path, _to, _deadline);
+      .swapTokensForExactTokens(_amountOut, _amountInMax, _routes, _to, _deadline);
 
     return amounts[amounts.length - 1];
   }
