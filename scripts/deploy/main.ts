@@ -12,9 +12,9 @@ async function main() {
   // await deployToken("Bitkub-Pegged DAI", "KDAI");
   // await deployAdminKAP20();
 
-  // await deployBKF();
+  await deployBKF();
 
-  await deployTransferRouter();
+  // await deployTransferRouter();
 
   // const addressList = await addresses.getAddressList(hre.network.name);
   // await deployKWRAP(
