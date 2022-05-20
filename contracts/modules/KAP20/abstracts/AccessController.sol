@@ -17,10 +17,10 @@ abstract contract AccessController is KYCHandler, Committee, Ownable {
   );
 
   modifier onlyTransferRouter() {
-    require(
-      msg.sender == transferRouter,
-      "AccessController: restricted only transfer router"
-    );
+    // require(
+    //   msg.sender == transferRouter,
+    //   "AccessController: restricted only transfer router"
+    // );
     _;
   }
 

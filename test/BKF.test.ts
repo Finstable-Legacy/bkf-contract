@@ -14,7 +14,7 @@ import {
 } from "../typechain";
 import { ethers } from "hardhat";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { parseEther, parseUnits } from "ethers/lib/utils";
+import { formatEther, parseEther, parseUnits } from "ethers/lib/utils";
 import { constants } from "ethers";
 import { expect } from "chai";
 import timeUtils from "../utils/time";
@@ -282,25 +282,22 @@ describe("BKF", function () {
 
       const merchantInitialBalance = await kusdt.balanceOf(merchant.address);
 
-      await bkfToken
-        .connect(customer)
-        .approve(bkf.address, constants.MaxUint256);
-
       const inputAmount = await swapRouter.getAmountsIn(productPrice, [
         bkfToken.address,
         kusdt.address,
       ]);
 
-      await bkf.connect(callHelper).purchase(
-        0,
-        merchant.address,
-        [bkfToken.address, kusdt.address],
-
-        inputAmount[0],
-        productPrice,
-        deadline,
-        customer.address
-      );
+      await bkf
+        .connect(callHelper)
+        .purchase(
+          0,
+          merchant.address,
+          [bkfToken.address, kusdt.address],
+          inputAmount[0],
+          productPrice,
+          deadline,
+          customer.address
+        );
 
       const merchantEndBalance = await kusdt.balanceOf(merchant.address);
 

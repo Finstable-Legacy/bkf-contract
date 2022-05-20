@@ -99,7 +99,6 @@ contract BKF is
           deadline,
           sender
         );
-
         (amountOrder, deductedFee) = deductFee(outputToken, swapOutput);
       }
     } else {
@@ -148,13 +147,33 @@ contract BKF is
   ) private returns (uint256) {
     address _tokenIn = _routes[0];
 
-    IKAP20(_tokenIn).transferFrom(_sender, address(this), _amountInMax);
+    // BKNEXT
+    if (msg.sender == callHelper) {
+      transferRouter.transferFrom(
+        "BKF",
+        _tokenIn,
+        _sender,
+        address(this),
+        _amountInMax
+      );
+    } else {
+      IKAP20(_tokenIn).transferFrom(_sender, address(this), _amountInMax);
+    }
+
     IKAP20(_tokenIn).approve(swapRouter, _amountInMax);
 
     // Receive an exact amount of output tokens for as few input tokens as possible
     uint256[] memory amounts = IUniswapV2Router02(swapRouter)
-      .swapTokensForExactTokens(_amountOut, _amountInMax, _routes, _to, _deadline);
+      .swapTokensForExactTokens(
+        _amountOut,
+        _amountInMax,
+        _routes,
+        _to,
+        _deadline
+      );
 
+    // send excess token back to sender
+    IKAP20(_tokenIn).transfer(_sender, _amountInMax - amounts[0]);
     return amounts[amounts.length - 1];
   }
 
