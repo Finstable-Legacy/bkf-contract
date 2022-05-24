@@ -32,7 +32,7 @@ contract BKF is
     address indexed merchant,
     address inputToken,
     address indexed outputToken,
-    uint256 amountInMax,
+    uint256 amountIn,
     uint256 amountOut,
     uint256 fee
   );
@@ -74,6 +74,7 @@ contract BKF is
   ) public {
     uint256 amountOrder;
     uint256 deductedFee;
+    uint256 amountIn = amountInMax;
 
     address inputToken = routes[0];
     address outputToken = routes[routes.length - 1];
@@ -91,7 +92,7 @@ contract BKF is
         );
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
-        uint256 swapOutput = swapTokensForExactTokens(
+        (uint256 swapOutput, uint256 swapInput) = swapTokensForExactTokens(
           routes,
           amountOut,
           amountInMax,
@@ -100,6 +101,7 @@ contract BKF is
           sender
         );
         (amountOrder, deductedFee) = deductFee(outputToken, swapOutput);
+        amountIn = swapInput;
       }
     } else {
       // Metamask
@@ -108,7 +110,7 @@ contract BKF is
         IKAP20(inputToken).transferFrom(sender, address(this), amountOut);
         (amountOrder, deductedFee) = deductFee(inputToken, amountOut);
       } else {
-        uint256 swapOutput = swapTokensForExactTokens(
+        (uint256 swapOutput, uint256 swapInput) = swapTokensForExactTokens(
           routes,
           amountOut,
           amountInMax,
@@ -118,6 +120,7 @@ contract BKF is
         );
 
         (amountOrder, deductedFee) = deductFee(outputToken, swapOutput);
+        amountIn = swapInput;
       }
     }
 
@@ -131,7 +134,7 @@ contract BKF is
       merchant,
       inputToken,
       outputToken,
-      amountInMax,
+      amountIn,
       amountOrder,
       deductedFee
     );
@@ -144,7 +147,7 @@ contract BKF is
     address _to,
     uint256 _deadline,
     address _sender
-  ) private returns (uint256) {
+  ) private returns (uint256, uint256) {
     address _tokenIn = _routes[0];
 
     // BKNEXT
@@ -172,9 +175,10 @@ contract BKF is
         _deadline
       );
 
-    // send excess token back to sender
+    // send change token back to sender
     IKAP20(_tokenIn).transfer(_sender, _amountInMax - amounts[0]);
-    return amounts[amounts.length - 1];
+
+    return (amounts[amounts.length - 1], amounts[0]);
   }
 
   function setFee(uint256 newFee) external onlyRootAdmin {
