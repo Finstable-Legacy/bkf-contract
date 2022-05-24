@@ -1,9 +1,10 @@
 import { formatBytes32String } from "ethers/lib/utils";
 import hre, { ethers } from "hardhat";
 import {
-  AdminKAP20Router__factory,
   AdminProjectRouter__factory,
   AdminProject__factory,
+  TestAdminKAP20Router__factory,
+  TestNextTransferRouter__factory,
 } from "../../typechain";
 import addressUtils from "../../utils/addresses";
 
@@ -20,8 +21,12 @@ export async function deployAdminKAP20() {
   )) as AdminProjectRouter__factory;
 
   const AdminKAP20Router = (await ethers.getContractFactory(
-    "AdminKAP20Router"
-  )) as AdminKAP20Router__factory;
+    "TestAdminKAP20Router"
+  )) as TestAdminKAP20Router__factory;
+
+  const TransferRouter = (await ethers.getContractFactory(
+    "TestNextTransferRouter"
+  )) as TestNextTransferRouter__factory;
 
   const committee = addressList["Committee"];
 
@@ -37,8 +42,6 @@ export async function deployAdminKAP20() {
     AdminProject: adminProject.address,
   });
 
-  // ----- ADMIN PROJECT -------
-
   // ----- ADMIN PROJECT ROUTER -------
   const adminProjectRouter = await AdminProjectRouter.deploy(
     adminProject.address
@@ -52,10 +55,9 @@ export async function deployAdminKAP20() {
     AdminProjectRouter: adminProjectRouter.address,
   });
 
-  // ----- ADMIN PROJECT ROUTER -------
-
   // ----- ADMIN KAP20 ROUTER -------
   const kkub = addressList["KKUB"];
+  const kusdt = addressList["KUSDT"];
   const kyc = addressList["KYC"];
   const bitkubNextLevel = 0;
   const adminKAP20Router = await AdminKAP20Router.deploy(
@@ -74,5 +76,19 @@ export async function deployAdminKAP20() {
     AdminKAP20Router: adminKAP20Router.address,
   });
 
-  // ----- ADMIN KAP20 ROUTER -------
+  // ----- TransferRouter -------
+  const transferRouter = await TransferRouter.deploy(
+    adminProjectRouter.address,
+    adminKAP20Router.address,
+    kkub,
+    committee,
+    [kusdt]
+  );
+
+  await transferRouter.deployTransaction.wait();
+  console.log("Deployed NextTransferRouter at: ", transferRouter.address);
+
+  await addressUtils.saveAddresses(hre.network.name, {
+    TransferRouter: transferRouter.address,
+  });
 }

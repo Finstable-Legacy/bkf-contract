@@ -1,13 +1,13 @@
-import { BlockSwapRouter__factory, Broker__factory } from "../../typechain";
+import hre, { ethers } from "hardhat";
 import addresses from "../../utils/addresses";
-import hre, { ethers } from 'hardhat';
+import { BKF__factory } from "../../typechain";
 
 export default async function changeFee() {
-    const [owner] = await ethers.getSigners();
-    const addressList = await addresses.getAddressList(hre.network.name);
-    const broker = Broker__factory.connect(addressList["Broker"], owner);
+  const [owner] = await ethers.getSigners();
+  const addressList = await addresses.getAddressList(hre.network.name);
+  const bkf = BKF__factory.connect(addressList["BKF"], owner);
 
-    await broker.setFee("50").then(tx => tx.wait());
+  await bkf.setFee("50").then((tx) => tx.wait());
 
-    console.log("Set Fee to: ", await broker.fee());
+  console.log("Set Fee to: ", await bkf.fee());
 }

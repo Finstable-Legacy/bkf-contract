@@ -1,24 +1,24 @@
 import hre, { ethers } from "hardhat";
-import { DealerKAP20__factory } from "../../typechain";
+import { BKF__factory } from "../../typechain";
 import addressUtils from "../../utils/addresses";
 
-export async function deployDealerKAP20() {
+export async function deployBKF() {
   const addressList = await addressUtils.getAddressList(hre.network.name);
   const [owner] = await ethers.getSigners();
-  const DealerKAP20 = (await ethers.getContractFactory(
-    "DealerKAP20"
-  )) as DealerKAP20__factory;
+  const BKF = (await ethers.getContractFactory("BKF")) as BKF__factory;
 
   const rootAdmin = owner.address;
   const feeClaimer = owner.address;
+  const swapRouter = addressList["SwapRouter"];
   const kyc = addressList["KYC"];
   const committee = addressList["Committee"];
-  const transferRouter = addressList["AdminKAP20Router"];
+  const transferRouter = addressList["TransferRouter"];
   // const callHelper = addressList["CallHelper"];
   const callHelper = owner.address;
-  const acceptedKYCLevel = 4;
+  const acceptedKYCLevel = 0; // 4 for mainnet
 
-  const dealer = await DealerKAP20.deploy(
+  const bkf = await BKF.deploy(
+    swapRouter,
     rootAdmin,
     feeClaimer,
     kyc,
@@ -27,12 +27,11 @@ export async function deployDealerKAP20() {
     callHelper,
     acceptedKYCLevel
   );
-
-  await dealer.deployTransaction.wait();
-
-  console.log("Deployed Dealer at: ", dealer.address);
+  await bkf.deployTransaction.wait();
 
   await addressUtils.saveAddresses(hre.network.name, {
-    DealerKAP20: dealer.address,
+    BKF: bkf.address,
   });
+
+  console.log("Deployed BKF at: ", bkf.address);
 }

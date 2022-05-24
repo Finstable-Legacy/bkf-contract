@@ -2,12 +2,19 @@ import hre, { ethers } from "hardhat";
 import addresses from "../../utils/addresses";
 import { BKF__factory } from "../../typechain";
 
-export default async function changeMarket() {
+async function main() {
   const [owner] = await ethers.getSigners();
   const addressList = await addresses.getAddressList(hre.network.name);
   const bkf = BKF__factory.connect(addressList["BKF"], owner);
 
-  await bkf.setSwapRouter(addressList["SwapRouter"]).then((tx) => tx.wait());
+  await bkf.setCallHelper(addressList["CallHelper"]).then((tx) => tx.wait());
 
-  console.log("Set SwapRouter to: ", await bkf.swapRouter());
+  console.log("Set callhelper to: ", await bkf.callHelper());
 }
+
+main()
+  .then(() => process.exit(0))
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });

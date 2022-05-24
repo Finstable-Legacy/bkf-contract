@@ -4,9 +4,9 @@ import { HardhatUserConfig } from "hardhat/config";
 import "@typechain/hardhat";
 import "@nomiclabs/hardhat-ethers";
 import "@nomiclabs/hardhat-waffle";
-import 'solidity-coverage';
+import "solidity-coverage";
 
-import accountUtils from './utils/accounts';
+import accountUtils from "./utils/accounts";
 import { parseEther } from "ethers/lib/utils";
 
 task("accounts", "Prints the list of accounts", async (args, hre) => {
@@ -37,15 +37,27 @@ const config: HardhatUserConfig = {
         settings: {
           optimizer: {
             enabled: true,
-            runs: 1000,
+            runs: 200,
           },
         },
-      }
-    ]
+      },
+      {
+        version: "0.6.7",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+    ],
   },
   networks: {
     hardhat: {
-      accounts: accountUtils.getAccounts().map(acc => ({ balance: parseEther('1000000000').toString(), privateKey: acc }))
+      accounts: accountUtils.getAccounts().map((acc) => ({
+        balance: parseEther("1000000000").toString(),
+        privateKey: acc,
+      })),
     },
     mainnet: {
       url: `https://eth-mainnet.alchemyapi.io/v2/VpvQ56jy1Mi0OIxiO2YUdnilWzU1z8Mi`,
