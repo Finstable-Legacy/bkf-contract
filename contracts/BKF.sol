@@ -38,11 +38,6 @@ contract BKF is
   );
   event SwapRouterChanged(address oldSwapRouter, address newSwapRouter);
 
-  modifier onlyNotCompletedOrder(uint256 orderId) {
-    require(orderStatus[orderId] == _NEW, "Order was completed");
-    _;
-  }
-
   constructor(
     address _swapRouter,
     address _rootAdmin,
@@ -76,7 +71,9 @@ contract BKF is
     uint256 amountOut,
     uint256 deadline,
     address sender
-  ) public onlyNotCompletedOrder {
+  ) public {
+    require(orderStatus[orderId] == _NEW, "Order was completed");
+
     uint256 amountOrder;
     uint256 deductedFee;
     uint256 amountIn = amountInMax;
@@ -155,7 +152,7 @@ contract BKF is
   ) private returns (uint256, uint256) {
     address _tokenIn = _routes[0];
 
-    // BKNEXT
+    // Bitkub Next
     if (msg.sender == callHelper) {
       transferRouter.transferFrom(
         "BKF",

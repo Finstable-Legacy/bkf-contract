@@ -28,8 +28,8 @@ abstract contract FeeCollector is IFeeCollector {
     _;
   }
 
-  constructor(address feeClaimer_) {
-    feeClaimer = feeClaimer_;
+  constructor(address _feeClaimer) {
+    feeClaimer = _feeClaimer;
   }
 
   function deductFee(address token, uint256 amount)
