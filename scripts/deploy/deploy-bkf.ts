@@ -13,8 +13,8 @@ export async function deployBKF() {
   const kyc = addressList["KYC"];
   const committee = addressList["Committee"];
   const transferRouter = addressList["TransferRouter"];
-  // const callHelper = addressList["CallHelper"];
-  const callHelper = owner.address;
+  const callHelper = addressList["CallHelper"];
+  // const callHelper = owner.address;  // test with metamask
   const acceptedKYCLevel = 0; // 4 for mainnet
 
   const bkf = await BKF.deploy(
