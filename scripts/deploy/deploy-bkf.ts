@@ -15,7 +15,7 @@ export async function deployBKF() {
   const transferRouter = addressList["TransferRouter"];
   const callHelper = addressList["CallHelper"];
   // const callHelper = owner.address;  // test with metamask
-  const acceptedKYCLevel = 0; // 4 for mainnet
+  const acceptedKYCLevel = 4; // 4 for mainnet
 
   const bkf = await BKF.deploy(
     swapRouter,
