@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: MIT
 // Sources flattened with hardhat v2.3.0 https://hardhat.org
 
 import "./interfaces/IAdminProject.sol";

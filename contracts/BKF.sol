@@ -72,6 +72,8 @@ contract BKF is
     uint256 deadline,
     address sender
   ) public {
+    require(orderStatus[orderId] == _NEW, "Order was completed");
+
     uint256 amountOrder;
     uint256 deductedFee;
     uint256 amountIn = amountInMax;
@@ -150,7 +152,7 @@ contract BKF is
   ) private returns (uint256, uint256) {
     address _tokenIn = _routes[0];
 
-    // BKNEXT
+    // Bitkub Next
     if (msg.sender == callHelper) {
       transferRouter.transferFrom(
         "BKF",
